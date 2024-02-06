@@ -16,34 +16,35 @@
 #           Module setup - Loeading all required packages
 
 #============================================================================
-#module load Anaconda3
-#Load all vital-IT packages preinstalled
-conda activate metawrap
-module load vital-it/7
-module load vital-it/7
-module load UHTS/Quality_control/fastqc/0.11.9
-module load UHTS/Analysis/trimmomatic/0.36
-module load Blast/blast/2.2.26
-module load Blast/ncbi-blast/2.9.0+
-module load UHTS/Aligner/bowtie2/2.3.4.1
-module load UHTS/Assembler/SPAdes/3.15.4
-module load UHTS/Assembler/megahit/1.1.4
-module load UHTS/Quality_control/quast/4.6.0
-module load UHTS/Analysis/samtools/1.10
-module load UHTS/Analysis/metabat/2.12.1
+    #module load Anaconda3
+    
+    #   Load all vital-IT packages preinstalled
+        # metawrap is the placeholder name for your metawrap envirnment! 
+        conda activate metawrap
+    module load vital-it/7
+    module load UHTS/Quality_control/fastqc/0.11.9
+    module load UHTS/Analysis/trimmomatic/0.36
+    module load Blast/blast/2.2.26
+    module load Blast/ncbi-blast/2.9.0+
+    module load UHTS/Aligner/bowtie2/2.3.4.1
+    module load UHTS/Assembler/SPAdes/3.15.4
+    module load UHTS/Assembler/megahit/1.1.4
+    module load UHTS/Quality_control/quast/4.6.0
+    module load UHTS/Analysis/samtools/1.10
+    module load UHTS/Analysis/metabat/2.12.1
 
 # ====================================================================================
 
 #                       User Input: Sets working directory
 
 # ====================================================================================
-WORKDIR=""   # Master directory where you want everything to be in there
-RAW_DATA_DIR=""   # Raw data directory where the raw fastq files are 
-        #WARNING: make sure your data is in _R1.fastq format!
+    WORKDIR=""   # Master directory where you want everything to be in there
+    RAW_DATA_DIR=""   # Raw data directory where the raw fastq files are 
+            #WARNING: make sure your data is in _R1.fastq format!
 
-# Replace these with your sample names so it can be analysed automatically in a loop.        
-sample_names=("Human1" "Human2" "Human3") # Recommend to manually type in all your sample names to loop through later..
-REF_GENOME="/storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/UHGG_reps.fasta" 
+    # Replace these with your sample names so it can be analysed automatically in a loop.        
+    sample_names=("Human1" "Human2" "Human3") # Recommend to manually type in all your sample names to loop through later..
+    REF_GENOME="/storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/UHGG_reps.fasta" 
 
 
 # ====================================================================================
@@ -64,16 +65,16 @@ cd $WORKDIR
         scp /storage/scratch/users/xd22m086/04_metawrap_testground/1_scripts_meta/ncbi.sh .
         
 
-    cd -p Metawrap_Pipeline
-        mkdir -p db ; mkdir -p OUTPUT; mkdir -p metaWRAP
+        cd -p Metawrap_Pipeline
+            mkdir -p db ; mkdir -p OUTPUT; mkdir -p metaWRAP
+            cd ../
 
 
-    cd metaWRAP
-
-        # Install the metawrap pipeline
-        git clone https://github.com/bxlab/metaWRAP.git
-        echo 'export PATH="${WORKDIR}/metaWRAP/bin:$PATH"' >> ~/.bashrc
-
+        cd metaWRAP
+            # Install the metawrap pipeline
+            git clone https://github.com/bxlab/metaWRAP.git
+            echo 'export PATH="${WORKDIR}/metaWRAP/bin:$PATH"' >> ~/.bashrc
+            cd ../
 
         # Here, echo and check whether metawrap is correctly configured and you can see it in the PATH.
         echo $PATH
@@ -81,8 +82,8 @@ cd $WORKDIR
 
             # In case you need to set up the environment on your own -- check the metawrap documentation
             # In case the documentation is too confusing, use this:
-            #installations
-            your_env_name="Insert_here"
+            #installation and making of an environment
+            your_env_name="placeholder" 
             
             conda install -y mamba
             mamba create -y -n ${your_env_name} python=2.7
@@ -101,8 +102,7 @@ cd $WORKDIR
             mamba install --metawrap
 
             # Important step here after installation: Manually locate WIP (00 file)
-    cd ../
-    cd db
+    cd ${WORKDIR}/db
         # Caution: If you already have these databases installed, soft link it for faster performance, 
         #          since these databases are very large.
         mkdir -p kraken2
@@ -135,6 +135,8 @@ cd $WORKDIR
             scp /storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/NCBI_nt/ncbi-blast-2.14.0+/bin/blastn .
             blastn_script='/storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/NCBI_nt/ncbi-blast-2.14.0+/bin/blastn'
             cd ../
+        cd ../
+
     cd OUTPUT
         mkdir -p QC
             cd QC
@@ -165,15 +167,15 @@ cd $WORKDIR
 echo "Finished Setting up folder structures."
 
 # Output directories-------------------------------------------------------------------
-OUT_DIR=$WORKDIR/OUTPUT
-QC_DIR=$OUT_DIR/QC
-ASSEMBLY_DIR=$OUT_DIR/ASSEMBLY
-BINNING_DIR=$OUT_DIR/BINNING
-BB_DIR=$OUT_DIR/BLOBOLOGY
-KRAKEN2_DIR=$OUT_DIR/KRAKEN2
-Blast_db=/storage/scratch/users/rj23k073/programs/BLAST/Database
-BLAST_DIR=$OUT_DIR/ANNOTATION    #Here we uses Russ' database to perform blast later
-echo "Input directory = $RAW_DATA_DIR, output = $OUT_DIR"
+    OUT_DIR=$WORKDIR/OUTPUT
+    QC_DIR=$OUT_DIR/QC
+    ASSEMBLY_DIR=$OUT_DIR/ASSEMBLY
+    BINNING_DIR=$OUT_DIR/BINNING
+    BB_DIR=$OUT_DIR/BLOBOLOGY
+    KRAKEN2_DIR=$OUT_DIR/KRAKEN2
+    Blast_db=/storage/scratch/users/rj23k073/programs/BLAST/Database
+    BLAST_DIR=$OUT_DIR/ANNOTATION    #Here we uses Russ' database to perform blast later
+    echo "Input directory = $RAW_DATA_DIR, output = $OUT_DIR"
 
 
 # -------------------------------------------------------------------------------------------
@@ -241,7 +243,17 @@ for sample_id in "${sample_names[@]}"; do
     #    --skip-trimming         dont trim sequences with trimgalore
     #    --skip-pre-qc-report    dont make FastQC report of input sequences
     #    --skip-post-qc-report   dont make FastQC report of final sequences
+    if [ $? -eq 0 ]; then
+        echo "Step 1: QC completed successfully, output files at $OUT_DIR/QC"
+        else
+            for sample_id in "${sample_names[@]}"; do
+                fastq -t 24 -o ${OUT_DIR} $RAW_DATA_DIR/${sample_id}*.fastq
+            done
+        fi
 
+    # Performs multiqc on the folder with all qc results
+    multiqc $OUT_DIR/QC -o $OUT_DIR/QC
+    
 done
         # Feedback Check:
         if [ $? -eq 0 ]; then

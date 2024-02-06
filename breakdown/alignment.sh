@@ -10,7 +10,50 @@
 #SBATCH --partition=epyc2
 #SBATCH --array=0-6
 
+# ===========================================================================
 
+#           Module setup - Loeading all required packages
+
+#============================================================================
+    #module load Anaconda3
+    
+    #   Load all vital-IT packages preinstalled
+        # metawrap is the placeholder name for your metawrap envirnment! 
+        conda activate metawrap
+    module load vital-it/7
+    module load UHTS/Quality_control/fastqc/0.11.9
+    module load UHTS/Analysis/trimmomatic/0.36
+    module load Blast/blast/2.2.26
+    module load Blast/ncbi-blast/2.9.0+
+    module load UHTS/Aligner/bowtie2/2.3.4.1
+    module load UHTS/Assembler/SPAdes/3.15.4
+    module load UHTS/Assembler/megahit/1.1.4
+    module load UHTS/Quality_control/quast/4.6.0
+    module load UHTS/Analysis/samtools/1.10
+    module load UHTS/Analysis/metabat/2.12.1
+
+# ====================================================================================
+
+#                       User Input: Sets working directory
+
+# ====================================================================================
+    WORKDIR=""   # Master directory where you want everything to be in there
+    RAW_DATA_DIR=""   # Raw data directory where the raw fastq files are 
+            #WARNING: make sure your data is in _R1.fastq format!
+
+    # Replace these with your sample names so it can be analysed automatically in a loop.        
+    sample_names=("Human1" "Human2" "Human3") # Recommend to manually type in all your sample names to loop through later..
+    REF_GENOME="/storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/UHGG_reps.fasta" 
+
+    OUT_DIR=$WORKDIR/OUTPUT
+    QC_DIR=$OUT_DIR/QC
+    ASSEMBLY_DIR=$OUT_DIR/ASSEMBLY
+    BINNING_DIR=$OUT_DIR/BINNING
+    BB_DIR=$OUT_DIR/BLOBOLOGY
+    KRAKEN2_DIR=$OUT_DIR/KRAKEN2
+    Blast_db=/storage/scratch/users/rj23k073/programs/BLAST/Database
+    BLAST_DIR=$OUT_DIR/ANNOTATION    #Here we uses Russ' database to perform blast later
+    echo "Input directory = $RAW_DATA_DIR, output = $OUT_DIR"
 
 # Step 4: MEGA blast -----------------------------------------------------------------------------------------
 #       This is a built-in metawrap module, classify_bins.  

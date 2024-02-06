@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=2GB
+#SBATCH --mem=8GB
 #SBATCH --time=01:00:00
 #SBATCH --job-name=folder_tree_building
 #SBATCH --mail-user=xiaoyue.deng@students.unibe.ch
@@ -12,13 +12,17 @@
 
 
 
-# ====================================================================================
+# -------------------------------------------------------------------------------------------
 
 #          Setting up pipeline structure + install metawrap packages
 
-# ====================================================================================
+#                                                           Reference runtime: 00:19:22 
+
+# -------------------------------------------------------------------------------------------
 # Data Strutcure -  makes directories if they do not already exist.
 WORKDIR=/storage/scratch/users/xd22m086/98_temp_dir/testing_wd
+
+
 cd $WORKDIR
     
     mkdir -p Metawrap_Pipeline
@@ -31,7 +35,7 @@ cd $WORKDIR
         scp /storage/scratch/users/xd22m086/04_metawrap_testground/1_scripts_meta/ncbi.sh .
         
 
-    cd -p Metawrap_Pipeline
+    cd Metawrap_Pipeline
         mkdir -p db ; mkdir -p OUTPUT; mkdir -p metaWRAP
 
 
