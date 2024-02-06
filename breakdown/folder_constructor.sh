@@ -10,8 +10,6 @@
 #SBATCH --partition=epyc2
 
 
-
-
 # -------------------------------------------------------------------------------------------
 
 #          Setting up pipeline structure + install metawrap packages
@@ -20,6 +18,7 @@
 
 # -------------------------------------------------------------------------------------------
 # Data Strutcure -  makes directories if they do not already exist.
+# Replace the work directory here with yours, placeholder.
 WORKDIR=/storage/scratch/users/xd22m086/98_temp_dir/testing_wd
 
 
@@ -27,8 +26,8 @@ cd $WORKDIR
     
     mkdir -p Metawrap_Pipeline
     mkdir -p Scripts
-    mkdir -p db
     mkdir -p OUTPUT
+    mkdir -p db
 
         # Here, where this script and the other scripts should be
         scp /storage/scratch/users/xd22m086/04_metawrap_testground/1_scripts_meta/meta_all.sh .
@@ -36,7 +35,8 @@ cd $WORKDIR
         
 
     cd Metawrap_Pipeline
-        mkdir -p db ; mkdir -p OUTPUT; mkdir -p metaWRAP
+        mkdir -p OUTPUT; mkdir -p metaWRAP;
+    cd ../
 
 
     cd metaWRAP
@@ -86,16 +86,15 @@ cd $WORKDIR
             cd ../
         mkdir -p NCBI_nt
             cd NCBI_nt
-            
-            # Softlink the database from the repository.   
-            ln -s /storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/NCBI_nt/* .
+                # Softlink the database from the repository, avoiding double download, while the account is still active.
+                ln -s /storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/NCBI_nt/* .
             cd ../
 
         mkdir -p NCBI_tax
             cd NCBI_tax
 
-            # softlink from repository
-            ln -s /storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/NCBI_tax/* .
+                # softlink from repository
+                ln -s /storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/NCBI_tax/* .
             cd ../
 
         mkdir -p BMTAGGER_INDEX
@@ -103,9 +102,10 @@ cd $WORKDIR
             cd PROGRAMS
 
             # Smaller program scripts are copied dicrectly for convinence. 
-            scp /storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/NCBI_nt/ncbi-blast-2.14.0+/bin/blastn .
-            blastn_script='/storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/NCBI_nt/ncbi-blast-2.14.0+/bin/blastn'
+                scp /storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/NCBI_nt/ncbi-blast-2.14.0+/bin/blastn .
+                blastn_script='/storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/NCBI_nt/ncbi-blast-2.14.0+/bin/blastn'
             cd ../
+    
     cd OUTPUT
         mkdir -p QC
             cd QC
