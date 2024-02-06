@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 #SBATCH --cpus-per-task=60
 #SBATCH --mem=80GB
-#SBATCH --time=3-0:00:00
-#SBATCH --job-name=Human3_kraken2_test
+#SBATCH --time=10:00:00
+#SBATCH --job-name=quality_control
 #SBATCH --mail-user=xiaoyue.deng@students.unibe.ch
 #SBATCH --mail-type=end
-#SBATCH --output=/storage/scratch/users/xd22m086/90_output_error/output/output_Human3_kraken2_test_%j.o
-#SBATCH --error=/storage/scratch/users/xd22m086/90_output_error/error/error_Human3_kraken2_test_%j.e
+#SBATCH --output=/storage/scratch/users/xd22m086/90_output_error/output/output_quality_control_%j.o
+#SBATCH --error=/storage/scratch/users/xd22m086/90_output_error/error/error_quality_control_%j.e
 #SBATCH --partition=epyc2
 #SBATCH --array=0-6
 

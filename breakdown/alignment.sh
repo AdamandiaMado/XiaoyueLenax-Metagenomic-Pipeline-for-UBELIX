@@ -37,13 +37,20 @@
 #                       User Input: Sets working directory
 
 # ====================================================================================
+# ====================================================================================
+
+#                       User Input: Sets working directory
+
+# ====================================================================================
     WORKDIR=""   # Master directory where you want everything to be in there
     RAW_DATA_DIR=""   # Raw data directory where the raw fastq files are 
             #WARNING: make sure your data is in _R1.fastq format!
 
     # Replace these with your sample names so it can be analysed automatically in a loop.        
-    sample_names=("Human1" "Human2" "Human3") # Recommend to manually type in all your sample names to loop through later..
-    REF_GENOME="/storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/UHGG_reps.fasta" 
+    sample_names=("Human1" "Human2" "Human3") # placeholder, replace later
+    REF_GENOME="/storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/UHGG_reps.fasta" #placeholder, replace later
+
+
 
     OUT_DIR=$WORKDIR/OUTPUT
     QC_DIR=$OUT_DIR/QC

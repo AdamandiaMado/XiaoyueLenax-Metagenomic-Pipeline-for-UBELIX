@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 #SBATCH --cpus-per-task=12
-#SBATCH --mem=40GB
-#SBATCH --time=20:00:00
-#SBATCH --job-name=meta_tagger_human_index
+#SBATCH --mem=10GB
+#SBATCH --time=10:00:00
+#SBATCH --job-name=meta_installer
 #SBATCH --mail-user=xiaoyue.deng@students.unibe.ch
 #SBATCH --mail-type=end
-#SBATCH --output=/storage/scratch/users/xd22m086/90_output_error/output/output_tagger_human_index_%j.o
-#SBATCH --error=/storage/scratch/users/xd22m086/90_output_error/error/error_tagger_human_index_%j.e
+#SBATCH --output=/storage/scratch/users/xd22m086/90_output_error/output/output_installer_%j.o
+#SBATCH --error=/storage/scratch/users/xd22m086/90_output_error/error/error_installer_%j.e
 #SBATCH --partition=epyc2
 
 
