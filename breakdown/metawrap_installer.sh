@@ -10,13 +10,13 @@
 #SBATCH --partition=epyc2
 
 
-# Installing metawrap, do this in your environment!
+# Installing metawrap, do this in your environment of choice! 
 conda install -y -c ursky metawrap-mg
 conda install -y blas=2.5=mkl
 mamba install -y metawrap
 
-NCBI_NT_DIR="Your database here - Requires manual configuration"
-NCBI_TAX_DIR="Your database here - Requires manual configuration"
+NCBI_NT_DIR="Your database here - placeholder, Requires manual configuration"
+NCBI_TAX_DIR="Your database here - placeholder, Requires manual configuration"
 
 wget "ftp://ftp.ncbi.nlm.nih.gov/blast/db/nt.*.tar.gz" -P ${NCBI_NT_DIR}
     for a in nt.*.tar.gz

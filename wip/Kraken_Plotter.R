@@ -1,3 +1,9 @@
+#================================
+
+# This R script is used for visualizing results from kraken.
+# The actual pipeline has not implemented Kraken due to database storage.
+
+
 # Install ggplot2 package if not already installed
 if (!requireNamespace("ggplot2", quietly = TRUE)) {
   install.packages("ggplot2")
@@ -5,7 +11,7 @@ if (!requireNamespace("ggplot2", quietly = TRUE)) {
 
 library(ggplot2)
 
-# Replace 'your_kraken_report.txt' with the actual path to your Kraken database report.
+# Replace 'your_kraken_report.txt' with the actual path to your Kraken database report. placeholder. 
 kraken_report_path <- 'Human1.report.txt'
 # Read the Kraken report into a data frame
 kraken_data <- read.table(kraken_report_path, header = FALSE, sep = '\t', stringsAsFactors = FALSE)
