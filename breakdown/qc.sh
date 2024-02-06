@@ -44,7 +44,7 @@
 
 #       The raw reads must be named with suffix *_1.fastq and *_2.fastq !!
 for sample_id in "${sample_names[@]}"; do
-    metawrap read_qc -1 $RAW_DATA_DIR/${sample_id}_R_1.fastq -2 -1 $RAW_DATA_DIR/${sample_id}_R_2.fastq -t 24 -o ${OUT_DIR}
+    metawrap read_qc -1 $RAW_DATA_DIR/${sample_id}_1.fastq -2 $RAW_DATA_DIR/${sample_id}_2.fastq -t 24 -o ${OUT_DIR}
     #Options:
 
     #    -1 STR          forward fastq reads
@@ -57,6 +57,16 @@ for sample_id in "${sample_names[@]}"; do
     #    --skip-trimming         dont trim sequences with trimgalore
     #    --skip-pre-qc-report    dont make FastQC report of input sequences
     #    --skip-post-qc-report   dont make FastQC report of final sequences
+    if [ $? -eq 0 ]; then
+        echo "Step 1: QC completed successfully, output files at $OUT_DIR/QC"
+        else
+            for sample_id in "${sample_names[@]}"; do
+                fastqc -t 24 -o ${OUT_DIR}/QC/${sample_id} $RAW_DATA_DIR/${sample_id}_1.fastq $RAW_DATA_DIR/${sample_id}_2.fastq
+            done
+        fi
+
+    # Performs multiqc on the folder with all qc results
+    multiqc $OUT_DIR/QC -o $OUT_DIR/QC/multiqc_report
 
 done
         # Feedback Check:

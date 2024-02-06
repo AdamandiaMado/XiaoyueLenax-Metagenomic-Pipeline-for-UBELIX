@@ -256,9 +256,9 @@ echo "WORKDIR
 
 # Step 1 - FastQC--------------------------------------------------------------------------------------------------------------
 
-#       The raw reads must be named with suffix *_R_1.fastq and *_R_2.fastq !!
+#       The raw reads must be named with suffix *_1.fastq and *_2.fastq !!
 for sample_id in "${sample_names[@]}"; do
-    metawrap read_qc -1 $RAW_DATA_DIR/${sample_id}_R_1.fastq -2 -1 $RAW_DATA_DIR/${sample_id}_R_2.fastq -t 24 -o ${OUT_DIR}
+    metawrap read_qc -1 $RAW_DATA_DIR/${sample_id}_1.fastq -2 $RAW_DATA_DIR/${sample_id}_2.fastq -t 24 -o ${OUT_DIR}
     #Options:
 
     #    -1 STR          forward fastq reads
@@ -275,12 +275,12 @@ for sample_id in "${sample_names[@]}"; do
         echo "Step 1: QC completed successfully, output files at $OUT_DIR/QC"
         else
             for sample_id in "${sample_names[@]}"; do
-                fastq -t 24 -o ${OUT_DIR} $RAW_DATA_DIR/${sample_id}*.fastq
+                fastqc -t 24 -o ${OUT_DIR}/QC/${sample_id} $RAW_DATA_DIR/${sample_id}_1.fastq $RAW_DATA_DIR/${sample_id}_2.fastq
             done
         fi
 
     # Performs multiqc on the folder with all qc results
-    multiqc $OUT_DIR/QC -o $OUT_DIR/QC
+    multiqc $OUT_DIR/QC -o $OUT_DIR/QC/multiqc_report
 
 done
         # Feedback Check:
@@ -298,8 +298,8 @@ done
     # Make sure to allocate enough storage!
     for sample_id in "${sample_names[@]}"; do
 
-        metawrap assembly -1 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq -2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq -o ${ASSEMBLY_DIR}/megahit2/${sample_id} -t 60 -m 80
-        metawrap assembly --metaspades -1 ${RAW_DATA_DIR}/${sample_id}_R_1.fastq -2 ${RAW_DATA_DIR}//${sample_id}_R_2.fastq -o ${ASSEMBLY_DIR}/metaspades2/${sample_id} -t 60 -m 60 
+        metawrap assembly -1 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq -2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq -o ${ASSEMBLY_DIR}/megahit2/${sample_id} -t 60 -m 80
+        metawrap assembly --metaspades -1 ${RAW_DATA_DIR}/${sample_id}_1.fastq -2 ${RAW_DATA_DIR}//${sample_id}_2.fastq -o ${ASSEMBLY_DIR}/metaspades2/${sample_id} -t 60 -m 60 
 
         # Usage: metaWRAP assembly [options] -1 reads_1.fastq -2 reads_2.fastq -o output_dir
         # Options:
@@ -366,16 +366,16 @@ done
 
         # ALL FOR METAHIT RESULTS
         # You may not want metabat 1 now there's metabat2, but this is an option
-        metawrap binning -o ${BINNING_DIR}/metabat2/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MetaSPAdes/${sample_id}/final_assembly.fasta --metabat2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq
-        # metawrap binning -o ${BINNING_DIR}/metabat1/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MetaSPAdes/${sample_id}final_assembly.fasta --metabat1 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq
-        metawrap binning -o ${BINNING_DIR}/maxbin2/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MetaSPAdes/${sample_id}final_assembly.fasta --maxbin2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq
-        metawrap binning -o ${BINNING_DIR}/concoct/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MetaSPAdes/${sample_id}final_assembly.fasta --concoct ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq
+        metawrap binning -o ${BINNING_DIR}/metabat2/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MetaSPAdes/${sample_id}/final_assembly.fasta --metabat2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq
+        # metawrap binning -o ${BINNING_DIR}/metabat1/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MetaSPAdes/${sample_id}final_assembly.fasta --metabat1 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq
+        metawrap binning -o ${BINNING_DIR}/maxbin2/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MetaSPAdes/${sample_id}final_assembly.fasta --maxbin2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq
+        metawrap binning -o ${BINNING_DIR}/concoct/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MetaSPAdes/${sample_id}final_assembly.fasta --concoct ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq
         
         # ALL FOR METASPADES RESULTS
-        metawrap binning -o ${BINNING_DIR}/metabat2/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MEGAHIT/${sample_id}/final_assembly.fasta --metabat2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq
-        # metawrap binning -o ${BINNING_DIR}/metabat1/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MEGAHIT/${sample_id}/final_assembly.fasta --metabat1 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq
-        metawrap binning -o ${BINNING_DIR}/maxbin2/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MEGAHIT/${sample_id}/final_assembly.fasta --maxbin2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq
-        metawrap binning -o ${BINNING_DIR}/concoct/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MEGAHIT/${sample_id}/final_assembly.fasta --concoct ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq
+        metawrap binning -o ${BINNING_DIR}/metabat2/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MEGAHIT/${sample_id}/final_assembly.fasta --metabat2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq
+        # metawrap binning -o ${BINNING_DIR}/metabat1/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MEGAHIT/${sample_id}/final_assembly.fasta --metabat1 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq
+        metawrap binning -o ${BINNING_DIR}/maxbin2/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MEGAHIT/${sample_id}/final_assembly.fasta --maxbin2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq
+        metawrap binning -o ${BINNING_DIR}/concoct/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MEGAHIT/${sample_id}/final_assembly.fasta --concoct ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq
         #  Parameters used:
         #       -a STR          metagenomic assembly file
         #        -o STR          output directory
@@ -578,7 +578,7 @@ done
 #       and traversing the tree by the most likely path.
 
     CLASSIFY_BINS_DIR=${SEL_BIN_DIR}/Classified_bins
-    for sample_id in "${sample_name[@]}"; do
+    for sample_id in "${sample_names[@]}"; do
         metawrap classify_bins -b ${SEL_BIN_DIR} -o ${CLASSIFY_BINS_DIR} -t 50
         #   Usage: metaWRAP classify_bins [options] -b bin_folder -o output_dir
         #   Options:
@@ -601,10 +601,12 @@ done
 #       This is a metawrap independent section, only utilizes blastn, instead of megablast.
 #       Choose either one of these to perform. 
 
-        # Input a bin of your choice here.
+        # Input a bin of your choice here.placeholder.
         # I have not figured out a way to perform blastn on all bins without them being shut down
         # due to limited computation cost.
         Selected_best_bin="" 
+        Output_name=""
+
 
 #       I cannot make them run in a loop. A tiny bin already takes ages.
 #       So, make sure to select one bins per sample, and we can run them for each sample
@@ -612,10 +614,13 @@ done
 #       This is not a great way to deal with them, but we need a method to bypass the limits...
 
         for sample_id in "${sample_name[@]}"; do
+            # Ensure output directories exist
+            mkdir -p "${BLAST_DIR}/${sample_id}"
+    
             ${blastn_script} -num_threads 50\
-            -db /storage/scratch/users/rj23k073/programs/BLAST/Database/nt\
+            -db /storage/scratch/users/rj23k073/programs/BLAST/Database/nt\  #placeholder, input blastdb
             -outfmt 6\
-            -query ${Selected_best_bin} > ${BLAST_DIR}/${sample_id}/test_bin1_Human1_out.raw.tab
+            -query ${Selected_best_bin} > ${BLAST_DIR}/${sample_id}/${Output_name}
         done 
 
                     #   Performance check
@@ -625,6 +630,7 @@ done
                     echo "Step 4.5: blastn module has failed !! Check the error report for more details."
                     exit 1
                     fi
+
 
 # WIP - bloblogy ---------------------------------------------------------------------------------
 #       This is a built in metawrap module, which still needs to be configured.

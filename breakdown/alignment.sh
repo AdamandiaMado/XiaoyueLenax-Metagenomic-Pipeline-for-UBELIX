@@ -37,11 +37,6 @@
 #                       User Input: Sets working directory
 
 # ====================================================================================
-# ====================================================================================
-
-#                       User Input: Sets working directory
-
-# ====================================================================================
     WORKDIR=""   # Master directory where you want everything to be in there
     RAW_DATA_DIR=""   # Raw data directory where the raw fastq files are 
             #WARNING: make sure your data is in _R1.fastq format!
@@ -49,8 +44,6 @@
     # Replace these with your sample names so it can be analysed automatically in a loop.        
     sample_names=("Human1" "Human2" "Human3") # placeholder, replace later
     REF_GENOME="/storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/UHGG_reps.fasta" #placeholder, replace later
-
-
 
     OUT_DIR=$WORKDIR/OUTPUT
     QC_DIR=$OUT_DIR/QC
@@ -70,7 +63,7 @@
 #       and traversing the tree by the most likely path.
 
     CLASSIFY_BINS_DIR=${SEL_BIN_DIR}/Classified_bins
-    for sample_id in "${sample_name[@]}"; do
+    for sample_id in "${sample_names[@]}"; do
         metawrap classify_bins -b ${SEL_BIN_DIR} -o ${CLASSIFY_BINS_DIR} -t 50
         #   Usage: metaWRAP classify_bins [options] -b bin_folder -o output_dir
         #   Options:
@@ -93,10 +86,12 @@
 #       This is a metawrap independent section, only utilizes blastn, instead of megablast.
 #       Choose either one of these to perform. 
 
-        # Input a bin of your choice here.
+        # Input a bin of your choice here.placeholder.
         # I have not figured out a way to perform blastn on all bins without them being shut down
         # due to limited computation cost.
         Selected_best_bin="" 
+        Output_name=""
+
 
 #       I cannot make them run in a loop. A tiny bin already takes ages.
 #       So, make sure to select one bins per sample, and we can run them for each sample
@@ -104,10 +99,13 @@
 #       This is not a great way to deal with them, but we need a method to bypass the limits...
 
         for sample_id in "${sample_name[@]}"; do
+            # Ensure output directories exist
+            mkdir -p "${BLAST_DIR}/${sample_id}"
+    
             ${blastn_script} -num_threads 50\
-            -db /storage/scratch/users/rj23k073/programs/BLAST/Database/nt\
+            -db /storage/scratch/users/rj23k073/programs/BLAST/Database/nt\  #placeholder, input blastdb
             -outfmt 6\
-            -query ${Selected_best_bin} > ${BLAST_DIR}/${sample_id}/test_bin1_Human1_out.raw.tab
+            -query ${Selected_best_bin} > ${BLAST_DIR}/${sample_id}/${Output_name}
         done 
 
                     #   Performance check
