@@ -1,0 +1,34 @@
+Hello, This is just a txt version to explain what was done to get the software installed. 
+Ideally this will not be needed in the future, once the steps are automated.
+
+Preparation: Activate conda, install mamba, clone metawrap repository, configure path(very important!!!),build+activate environment, run metawrap.
+
+module load Anaconda3
+# Checks availiable environments, if you already see the desired environment (xd in my case), activate it
+conda env list
+conda activate xd
+
+#to start from scratch
+git clone https://github.com/bxlab/metaWRAP.git
+#manually locate the ./bin file in metawrap and add path to $PATH, should be yourpath/metaWRAP/bin/, add the export command in the ./bashrc
+vim ~/.bashrc
+export PATH="/storage/scratch/users/xd22m086/metaWRAP/bin:$PATH
+#quit vim with :q
+#checks if path correctly configured - should see metawrap in PATH
+echo $PATH
+
+#installations
+conda install -y mamba
+mamba create -y -n your_env_name python=2.7
+conda activate your_env_name
+# configure channels: may not be necessary
+conda config --add channels defaults
+conda config --add channels conda-forge
+conda config --add channels bioconda
+conda config --add channels ursky
+
+# Install metawrap dependencies - may not be necessary
+mamba install --only-deps -c ursky metawrap-mg
+# Install metawrap
+mamba install --metawrap
+
