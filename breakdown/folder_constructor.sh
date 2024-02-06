@@ -129,3 +129,30 @@ cd $WORKDIR
         
 # Sub folders set up complete
 echo "Finished Setting up folder structures."
+echo "WORKDIR
+        ├── db
+        │   ├── BMTAGGER_INDEX
+        │   ├── NCBI_nt
+        │   ├── NCBI_tax
+        │   └── PROGRAMS
+        │       └── blastn
+        ├── metaWRAP
+        │   └── (contents of the metaWRAP git repository)
+        ├── OUTPUT
+        │   ├── ANNOTATION
+        │   │   ├── blastn
+        │   │   └── megablast
+        │   ├── ASSEMBLY
+        │   │   ├── MetaSPAdes
+        │   │   └── MEGAHIT
+        │   ├── BINNING
+        │   │   ├── CONCOCT
+        │   │   ├── Maxbin2
+        │   │   └── Metabat2
+        │   ├── BLOBOLOGY
+        │   ├── KRAKEN2
+        │   └── QC
+        │       └── QUAST
+        ├── Scripts
+        └── meta_all.sh, ncbi.sh (copied to WORKDIR)
+        "
