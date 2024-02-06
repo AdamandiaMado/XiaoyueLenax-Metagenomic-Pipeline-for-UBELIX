@@ -24,7 +24,7 @@ WORKDIR=/storage/scratch/users/xd22m086/98_temp_dir/testing_wd
 
 cd $WORKDIR
     
-    mkdir -p Metawrap_Pipeline
+    mkdir -p metaWRAP
     mkdir -p Scripts
     mkdir -p OUTPUT
     mkdir -p db
@@ -32,12 +32,6 @@ cd $WORKDIR
         # Here, where this script and the other scripts should be
         scp /storage/scratch/users/xd22m086/04_metawrap_testground/1_scripts_meta/meta_all.sh .
         scp /storage/scratch/users/xd22m086/04_metawrap_testground/1_scripts_meta/ncbi.sh .
-        
-
-    cd Metawrap_Pipeline
-        mkdir -p OUTPUT; mkdir -p metaWRAP;
-    cd ../
-
 
     cd metaWRAP
 
@@ -52,8 +46,9 @@ cd $WORKDIR
 
             # In case you need to set up the environment on your own -- check the metawrap documentation
             # In case the documentation is too confusing, use this:
+            
             #installations
-            your_env_name="Insert_here"
+            your_env_name="Insert_here"  # Placeholder, insert your env name here.
             
             conda install -y mamba
             mamba create -y -n ${your_env_name} python=2.7

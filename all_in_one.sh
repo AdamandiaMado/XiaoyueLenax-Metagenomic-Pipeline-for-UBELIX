@@ -253,7 +253,7 @@ for sample_id in "${sample_names[@]}"; do
 
     # Performs multiqc on the folder with all qc results
     multiqc $OUT_DIR/QC -o $OUT_DIR/QC
-    
+
 done
         # Feedback Check:
         if [ $? -eq 0 ]; then
@@ -334,24 +334,6 @@ done
     METASPADES_DIR=${ASSEMBLY_DIR}/MetaSPAdes
     CONCOCT_DIR=${OUT_DIR}/CONCOCT
     
-    # Pipeline Option 1 - Russ's Concoct, independent of metawrap
-    #  For MEGAHIT
-        perl /storage/scratch/users/rj23k073/programs/Maxbin2/MaxBin-2.2.7/run_MaxBin.pl
-        cut_up_fasta.py /storage/scratch/users/rj23k073/04_DEER/06_Assembly/6_2_deer.asm/scaffolds_filtered.fasta -c 10000 -o 0 --merge_last -b 6_2_deer_10K.bed > 6_2_deer_10K.fa
-        concoct_coverage_table.py 6_2_deer_10K.bed /storage/scratch/users/rj23k073/04_DEER/07_BAM/6_2_filter.sorted.bam > 6_2_coverage_table.tsv
-        concoct --composition_file 6_2_deer_10K.fa --coverage_file 6_2_coverage_table.tsv -b concoct_output/
-        merge_cutup_clustering.py concoct_output/clustering_gt1000.csv > concoct_output/clustering_merged.csv
-        mkdir concoct_output/fasta_bins
-        extract_fasta_bins.py /storage/scratch/users/rj23k073/04_DEER/06_Assembly/6_2_deer.asm/scaffolds_filtered.fasta concoct_output/clustering_merged.csv --output_path concoct_output/fasta_bins
-    # For MetaSPAdes
-        perl /storage/scratch/users/rj23k073/programs/Maxbin2/MaxBin-2.2.7/run_MaxBin.pl
-        cut_up_fasta.py /storage/scratch/users/rj23k073/04_DEER/06_Assembly/6_2_deer.asm/scaffolds_filtered.fasta -c 10000 -o 0 --merge_last -b 6_2_deer_10K.bed > 6_2_deer_10K.fa
-        concoct_coverage_table.py 6_2_deer_10K.bed /storage/scratch/users/rj23k073/04_DEER/07_BAM/6_2_filter.sorted.bam > 6_2_coverage_table.tsv
-        concoct --composition_file 6_2_deer_10K.fa --coverage_file 6_2_coverage_table.tsv -b concoct_output/
-        merge_cutup_clustering.py concoct_output/clustering_gt1000.csv > concoct_output/clustering_merged.csv
-        mkdir concoct_output/fasta_bins
-        extract_fasta_bins.py /storage/scratch/users/rj23k073/04_DEER/06_Assembly/6_2_deer.asm/scaffolds_filtered.fasta concoct_output/clustering_merged.csv --output_path concoct_output/fasta_bins
-
     for sample_id in "${sample_name[@]}"; do
 
         # ALL FOR METAHIT RESULTS
