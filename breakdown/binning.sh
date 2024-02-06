@@ -43,11 +43,17 @@ module load UHTS/Analysis/metabat/2.12.1
     # Replace these with your sample names so it can be analysed automatically in a loop.        
     sample_names=("Human1" "Human2" "Human3") # placeholder, replace later
     REF_GENOME="/storage/scratch/users/xd22m086/04_metawrap_testground/DATABASE/UHGG_reps.fasta" #placeholder, replace later
-
-
-
-
-
+    
+    # Output directories-------------------------------------------------------------------
+        OUT_DIR=$WORKDIR/OUTPUT
+        QC_DIR=$OUT_DIR/QC
+        ASSEMBLY_DIR=$OUT_DIR/ASSEMBLY
+        BINNING_DIR=$OUT_DIR/BINNING
+        BB_DIR=$OUT_DIR/BLOBOLOGY
+        KRAKEN2_DIR=$OUT_DIR/KRAKEN2
+        Blast_db=/storage/scratch/users/rj23k073/programs/BLAST/Database
+        BLAST_DIR=$OUT_DIR/ANNOTATION    #Here we uses Russ' database to perform blast later
+        echo "Input directory = $RAW_DATA_DIR, output = $OUT_DIR"
 
 # Step 3 : Binning ------------------------------------------------------------------------------------------------------------
     
@@ -58,38 +64,19 @@ module load UHTS/Analysis/metabat/2.12.1
     METASPADES_DIR=${ASSEMBLY_DIR}/MetaSPAdes
     CONCOCT_DIR=${OUT_DIR}/CONCOCT
     
-    # Pipeline Option 1 - Russ's Concoct, independent of metawrap
-    #  For MEGAHIT
-        perl /storage/scratch/users/rj23k073/programs/Maxbin2/MaxBin-2.2.7/run_MaxBin.pl
-        cut_up_fasta.py /storage/scratch/users/rj23k073/04_DEER/06_Assembly/6_2_deer.asm/scaffolds_filtered.fasta -c 10000 -o 0 --merge_last -b 6_2_deer_10K.bed > 6_2_deer_10K.fa
-        concoct_coverage_table.py 6_2_deer_10K.bed /storage/scratch/users/rj23k073/04_DEER/07_BAM/6_2_filter.sorted.bam > 6_2_coverage_table.tsv
-        concoct --composition_file 6_2_deer_10K.fa --coverage_file 6_2_coverage_table.tsv -b concoct_output/
-        merge_cutup_clustering.py concoct_output/clustering_gt1000.csv > concoct_output/clustering_merged.csv
-        mkdir concoct_output/fasta_bins
-        extract_fasta_bins.py /storage/scratch/users/rj23k073/04_DEER/06_Assembly/6_2_deer.asm/scaffolds_filtered.fasta concoct_output/clustering_merged.csv --output_path concoct_output/fasta_bins
-    # For MetaSPAdes
-        perl /storage/scratch/users/rj23k073/programs/Maxbin2/MaxBin-2.2.7/run_MaxBin.pl
-        cut_up_fasta.py /storage/scratch/users/rj23k073/04_DEER/06_Assembly/6_2_deer.asm/scaffolds_filtered.fasta -c 10000 -o 0 --merge_last -b 6_2_deer_10K.bed > 6_2_deer_10K.fa
-        concoct_coverage_table.py 6_2_deer_10K.bed /storage/scratch/users/rj23k073/04_DEER/07_BAM/6_2_filter.sorted.bam > 6_2_coverage_table.tsv
-        concoct --composition_file 6_2_deer_10K.fa --coverage_file 6_2_coverage_table.tsv -b concoct_output/
-        merge_cutup_clustering.py concoct_output/clustering_gt1000.csv > concoct_output/clustering_merged.csv
-        mkdir concoct_output/fasta_bins
-        extract_fasta_bins.py /storage/scratch/users/rj23k073/04_DEER/06_Assembly/6_2_deer.asm/scaffolds_filtered.fasta concoct_output/clustering_merged.csv --output_path concoct_output/fasta_bins
-
-    for sample_id in "${sample_name[@]}"; do
-
+    for sample_id in "${sample_names[@]}"; do
         # ALL FOR METAHIT RESULTS
         # You may not want metabat 1 now there's metabat2, but this is an option
-        metawrap binning -o ${BINNING_DIR}/metabat2/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MetaSPAdes/${sample_id}/final_assembly.fasta --metabat2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq
-        # metawrap binning -o ${BINNING_DIR}/metabat1/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MetaSPAdes/${sample_id}final_assembly.fasta --metabat1 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq
-        metawrap binning -o ${BINNING_DIR}/maxbin2/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MetaSPAdes/${sample_id}final_assembly.fasta --maxbin2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq
-        metawrap binning -o ${BINNING_DIR}/concoct/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MetaSPAdes/${sample_id}final_assembly.fasta --concoct ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq
+        metawrap binning -o ${BINNING_DIR}/MetaSPAdes/metabat2/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MetaSPAdes/${sample_id}/final_assembly.fasta --metabat2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq
+        # metawrap binning -o ${BINNING_DIR}/MetaSPAdes/metabat1/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MetaSPAdes/${sample_id}/final_assembly.fasta --metabat1 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq
+        metawrap binning -o ${BINNING_DIR}/MetaSPAdes/maxbin2/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MetaSPAdes/${sample_id}/final_assembly.fasta --maxbin2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq
+        metawrap binning -o ${BINNING_DIR}/MetaSPAdes/concoct/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MetaSPAdes/${sample_id}/final_assembly.fasta --concoct ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq
         
         # ALL FOR METASPADES RESULTS
-        metawrap binning -o ${BINNING_DIR}/metabat2/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MEGAHIT/${sample_id}/final_assembly.fasta --metabat2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq
-        # metawrap binning -o ${BINNING_DIR}/metabat1/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MEGAHIT/${sample_id}/final_assembly.fasta --metabat1 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq
-        metawrap binning -o ${BINNING_DIR}/maxbin2/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MEGAHIT/${sample_id}/final_assembly.fasta --maxbin2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq
-        metawrap binning -o ${BINNING_DIR}/concoct/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MEGAHIT/${sample_id}/final_assembly.fasta --concoct ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_R_2.fastq
+        metawrap binning -o ${BINNING_DIR}/MEGAHIT/metabat2/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MEGAHIT/${sample_id}/final_assembly.fasta --metabat2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq
+        # metawrap binning -o ${BINNING_DIR}/MEGAHIT/metabat1/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MEGAHIT/${sample_id}/final_assembly.fasta --metabat1 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq
+        metawrap binning -o ${BINNING_DIR}/MEGAHIT/maxbin2/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MEGAHIT/${sample_id}/final_assembly.fasta --maxbin2 ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq
+        metawrap binning -o ${BINNING_DIR}/MEGAHIT/concoct/${sample_id} -t 50 -a ${ASSEMBLY_DIR}/MEGAHIT/${sample_id}/final_assembly.fasta --concoct ${RAW_DATA_DIR}/${sample_id}/${sample_id}_1.fastq ${RAW_DATA_DIR}/${sample_id}/${sample_id}_2.fastq
         #  Parameters used:
         #       -a STR          metagenomic assembly file
         #        -o STR          output directory
@@ -165,24 +152,24 @@ module load UHTS/Analysis/metabat/2.12.1
 #               ssu_finder   -> Identify SSU (16S/18S) rRNAs in sequences
 
 
-for sample_id in "${samples[@]}"; do
-	
-    checkm lineage_wf -t 50 -x fa ${BIN_DIR}/${sample_id}/metabat2_bins ${OUT_DIR}/${sample_id}/checkm
-    #runs tree, lineage_set, analyze, qa
-    # usage: checkm lineage_wf [-h] [-r] [--ali] [--nt] [-g] [-u UNIQUE] [-m MULTI] [--force_domain] [--no_refinement] 
-    #                     [--individual_markers] [--skip_adj_correction] [--skip_pseudogene_correction] [--aai_strain AAI_STRAIN] 
-    #                     [-a ALIGNMENT_FILE] [--ignore_thresholds]
-    #                     [-e E_VALUE] [-l LENGTH] [-f FILE] [--tab_table] [-x EXTENSION] [-t THREADS] [--pplacer_threads PPLACER_THREADS] [-q]
-    #                     [--tmpdir TMPDIR]
-    #                     bin_input output_dir
+    for sample_id in "${samples[@]}"; do
+        
+        checkm lineage_wf -t 50 -x fa ${BIN_DIR}/${sample_id}/metabat2_bins ${OUT_DIR}/${sample_id}/checkm
+        #runs tree, lineage_set, analyze, qa
+        # usage: checkm lineage_wf [-h] [-r] [--ali] [--nt] [-g] [-u UNIQUE] [-m MULTI] [--force_domain] [--no_refinement] 
+        #                     [--individual_markers] [--skip_adj_correction] [--skip_pseudogene_correction] [--aai_strain AAI_STRAIN] 
+        #                     [-a ALIGNMENT_FILE] [--ignore_thresholds]
+        #                     [-e E_VALUE] [-l LENGTH] [-f FILE] [--tab_table] [-x EXTENSION] [-t THREADS] [--pplacer_threads PPLACER_THREADS] [-q]
+        #                     [--tmpdir TMPDIR]
+        #                     bin_input output_dir
 
-    checkm gc_plot --dpi 1000 -x fa ${BIN_DIR}/${sample_id}/metabat2_bins ${OUT_DIR}/${sample_id}/checkm 1
-    # gc_plot: create GC histogram and delta-GC plot
-    # usage: checkm gc_plot [-h] [--image_type {eps,pdf,png,ps,svg}] [--dpi DPI] [--font_size FONT_SIZE] 
-    #                   [-x EXTENSION] [--width WIDTH] [--height HEIGHT]
-    #                  [-w GC_WINDOW_SIZE] [-b GC_BIN_WIDTH] [-q]
-    #                  bin_input output_dir dist_value [dist_value ...]
-done
+        checkm gc_plot --dpi 1000 -x fa ${BIN_DIR}/${sample_id}/metabat2_bins ${OUT_DIR}/${sample_id}/checkm 1
+        # gc_plot: create GC histogram and delta-GC plot
+        # usage: checkm gc_plot [-h] [--image_type {eps,pdf,png,ps,svg}] [--dpi DPI] [--font_size FONT_SIZE] 
+        #                   [-x EXTENSION] [--width WIDTH] [--height HEIGHT]
+        #                  [-w GC_WINDOW_SIZE] [-b GC_BIN_WIDTH] [-q]
+        #                  bin_input output_dir dist_value [dist_value ...]
+    done
 
     # Performance check
         if [ $? -eq 0 ]; then
@@ -201,45 +188,45 @@ done
 #       For questions, bugs, and suggestions, contact me at guritsk1@jhu.edu.
 
 
-# Set here the bins that you would like to use, by default is the metabat2
+    # Set here the bins that you would like to use, by default is the metabat2
 
-    SEL_BIN_DIR=${BINNING_DIR}/metabat2
-    # WIP: give an option to skil salmon?
-#       For megahit
-for sample_id in "${sample_name[@]}"; do
-    #metawrap quant_bins -b ${BIN_DIR}/${sample_id}/original_bins -o ${OUT_DIR}/${sample_id} -a ${BIN_DIR}/${sample_id}/binned_assembly/assembly.fa ${RAW_DATA_DIR}/${sample_id}/*R_1.fastq ${RAW_DATA_DIR}/${sample_id}/*R_2.fastq -t 50
-    metawrap quant_bins -b ${BIN_DIR}/${sample_id}/original_bins \
-    -o ${OUT_DIR}/${sample_id} \
-    -a ${MEGAHIT_DIR}/${sample_id}/final_assembly.fasta ${RAW_DATA_DIR}/${sample_id}/*R_1.fastq ${RAW_DATA_DIR}/${sample_id}/*R_2.fastq -t 50
-    #   Usage: metaWRAP quant_bins [options] -b bins_folder -o output_dir -a assembly.fa readsA_1.fastq readsA_2.fastq ... [readsX_1.fastq readsX_2.fastq]
-    #   Options:
-    #        -b STR          folder containing draft genomes (bins) in fasta format
-    #        -o STR          output directory
-    #        -a STR          fasta file with entire metagenomic assembly (strongly recommended!)
-    #        -t INT          number of threads
-done
+        SEL_BIN_DIR=${BINNING_DIR}/metabat2
+        # WIP: give an option to skil salmon?
+    #       For megahit
+    for sample_id in "${sample_names[@]}"; do
+        #metawrap quant_bins -b ${BIN_DIR}/${sample_id}/original_bins -o ${OUT_DIR}/${sample_id} -a ${BIN_DIR}/${sample_id}/binned_assembly/assembly.fa ${RAW_DATA_DIR}/${sample_id}/*R_1.fastq ${RAW_DATA_DIR}/${sample_id}/*R_2.fastq -t 50
+        metawrap quant_bins -b ${BIN_DIR}/${sample_id}/original_bins \
+        -o ${OUT_DIR}/${sample_id} \
+        -a ${MEGAHIT_DIR}/${sample_id}/final_assembly.fasta ${RAW_DATA_DIR}/${sample_id}/*R_1.fastq ${RAW_DATA_DIR}/${sample_id}/*R_2.fastq -t 50
+        #   Usage: metaWRAP quant_bins [options] -b bins_folder -o output_dir -a assembly.fa readsA_1.fastq readsA_2.fastq ... [readsX_1.fastq readsX_2.fastq]
+        #   Options:
+        #        -b STR          folder containing draft genomes (bins) in fasta format
+        #        -o STR          output directory
+        #        -a STR          fasta file with entire metagenomic assembly (strongly recommended!)
+        #        -t INT          number of threads
+    done
 
-#        For metaSPADES
-for sample_id in "${sample_name[@]}"; do
-    #metawrap quant_bins -b ${BIN_DIR}/${sample_id}/original_bins -o ${OUT_DIR}/${sample_id} -a ${BIN_DIR}/${sample_id}/binned_assembly/assembly.fa ${RAW_DATA_DIR}/${sample_id}/*R_1.fastq ${RAW_DATA_DIR}/${sample_id}/*R_2.fastq -t 50
-    metawrap quant_bins -b ${BIN_DIR}/${sample_id}/original_bins \
-    -o ${OUT_DIR}/${sample_id} \
-    -a ${METASPADES_DIR}/${sample_id}/final_assembly.fasta ${RAW_DATA_DIR}/${sample_id}/*R_1.fastq ${RAW_DATA_DIR}/${sample_id}/*R_2.fastq -t 50
-    #   Usage: metaWRAP quant_bins [options] -b bins_folder -o output_dir -a assembly.fa readsA_1.fastq readsA_2.fastq ... [readsX_1.fastq readsX_2.fastq]
-    #   Options:
-    #        -b STR          folder containing draft genomes (bins) in fasta format
-    #        -o STR          output directory
-    #        -a STR          fasta file with entire metagenomic assembly (strongly recommended!)
-    #        -t INT          number of threads
-done
+    #        For metaSPADES
+    for sample_id in "${sample_names[@]}"; do
+        #metawrap quant_bins -b ${BIN_DIR}/${sample_id}/original_bins -o ${OUT_DIR}/${sample_id} -a ${BIN_DIR}/${sample_id}/binned_assembly/assembly.fa ${RAW_DATA_DIR}/${sample_id}/*R_1.fastq ${RAW_DATA_DIR}/${sample_id}/*R_2.fastq -t 50
+        metawrap quant_bins -b ${BIN_DIR}/${sample_id}/original_bins \
+        -o ${OUT_DIR}/${sample_id} \
+        -a ${METASPADES_DIR}/${sample_id}/final_assembly.fasta ${RAW_DATA_DIR}/${sample_id}/*R_1.fastq ${RAW_DATA_DIR}/${sample_id}/*R_2.fastq -t 50
+        #   Usage: metaWRAP quant_bins [options] -b bins_folder -o output_dir -a assembly.fa readsA_1.fastq readsA_2.fastq ... [readsX_1.fastq readsX_2.fastq]
+        #   Options:
+        #        -b STR          folder containing draft genomes (bins) in fasta format
+        #        -o STR          output directory
+        #        -a STR          fasta file with entire metagenomic assembly (strongly recommended!)
+        #        -t INT          number of threads
+    done
 
-    # Performance check
-        if [ $? -eq 0 ]; then
-        echo "Step 3.6: Quant_bins completed successfully, output files at ${OUT_DIR}/${sample_id}/checkm"
-        else
-        echo "Step 3.6: Quant_bins has failed !! Check the error report for more details."
-        exit 1
-        fi
+        # Performance check
+            if [ $? -eq 0 ]; then
+            echo "Step 3.6: Quant_bins completed successfully, output files at ${OUT_DIR}/${sample_id}/checkm"
+            else
+            echo "Step 3.6: Quant_bins has failed !! Check the error report for more details."
+            exit 1
+            fi
 
 
 # Step 3.7 Bin refinement -------------------------------------------------------
@@ -248,7 +235,7 @@ done
 #   to analyze the metagenomic bins and arrive at the best possible putative genomes.
 #   There are several options to give additional binning results for comparison. 
 
-    for sample_id in "${sample_name[@]}"; do    
+    for sample_id in "${sample_names[@]}"; do    
         metawrap bin_refinement -o ${SEL_BIN_DIR}/${sample_id}/refined_bins -A ${SEL_BIN_DIR}/${sample_id}/metabat2_bins -1 ${RAW_DATA_DIR}/${sample_id}/*_1.fastq -2 ${RAW_DATA_DIR}/${sample_id}/*_2.fastq -t 50
 
         #  Usage: metaWRAP bin_refinement [options] -o output_dir -A bin_folderA [-B bin_folderB -C bin_folderC]

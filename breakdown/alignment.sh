@@ -64,6 +64,8 @@
 
     CLASSIFY_BINS_DIR=${SEL_BIN_DIR}/Classified_bins
     for sample_id in "${sample_names[@]}"; do
+        # Ensure output directories exist
+        mkdir -p "${BLAST_DIR}/${sample_id}"
         metawrap classify_bins -b ${SEL_BIN_DIR} -o ${CLASSIFY_BINS_DIR} -t 50
         #   Usage: metaWRAP classify_bins [options] -b bin_folder -o output_dir
         #   Options:
@@ -71,7 +73,13 @@
         #    -b STR          folder with the bins to be classified (in fasta format)
         #    -o STR          output directory
         #    -t INT          number of threads
-
+        # Performance check for each BLAST command
+            if [ $? -eq 0 ]; then
+                echo "Step 4: classify_bin for ${sample_id} completed successfully, output files at ${BLAST_DIR}/${sample_id}/${Output_name}"
+            else
+                echo "Step 4: classify_bin for ${sample_id} has failed. Check the error report for more details."
+                # Consider whether to exit or not based on your preference for handling errors
+            fi
     done
 
         #   Performance check
@@ -98,7 +106,7 @@
 #       For example, you can choose the longest bin. 
 #       This is not a great way to deal with them, but we need a method to bypass the limits...
 
-        for sample_id in "${sample_name[@]}"; do
+        for sample_id in "${sample_names[@]}"; do
             # Ensure output directories exist
             mkdir -p "${BLAST_DIR}/${sample_id}"
     
@@ -106,6 +114,14 @@
             -db /storage/scratch/users/rj23k073/programs/BLAST/Database/nt\  #placeholder, input blastdb
             -outfmt 6\
             -query ${Selected_best_bin} > ${BLAST_DIR}/${sample_id}/${Output_name}
+
+                # Performance check for each BLAST command
+                    if [ $? -eq 0 ]; then
+                        echo "Step 4.5: blastn for ${sample_id} completed successfully, output files at ${BLAST_DIR}/${sample_id}/${Output_name}"
+                    else
+                        echo "Step 4.5: blastn for ${sample_id} has failed. Check the error report for more details."
+                        # Consider whether to exit or not based on your preference for handling errors
+                    fi
         done 
 
                     #   Performance check
