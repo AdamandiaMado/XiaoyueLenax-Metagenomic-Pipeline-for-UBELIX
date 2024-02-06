@@ -451,24 +451,24 @@ done
 #               ssu_finder   -> Identify SSU (16S/18S) rRNAs in sequences
 
 
-for sample_id in "${samples[@]}"; do
-	
-    checkm lineage_wf -t 50 -x fa ${BIN_DIR}/${sample_id}/metabat2_bins ${OUT_DIR}/${sample_id}/checkm
-    #runs tree, lineage_set, analyze, qa
-    # usage: checkm lineage_wf [-h] [-r] [--ali] [--nt] [-g] [-u UNIQUE] [-m MULTI] [--force_domain] [--no_refinement] 
-    #                     [--individual_markers] [--skip_adj_correction] [--skip_pseudogene_correction] [--aai_strain AAI_STRAIN] 
-    #                     [-a ALIGNMENT_FILE] [--ignore_thresholds]
-    #                     [-e E_VALUE] [-l LENGTH] [-f FILE] [--tab_table] [-x EXTENSION] [-t THREADS] [--pplacer_threads PPLACER_THREADS] [-q]
-    #                     [--tmpdir TMPDIR]
-    #                     bin_input output_dir
+    for sample_id in "${samples[@]}"; do
+        
+        checkm lineage_wf -t 50 -x fa ${BIN_DIR}/${sample_id}/metabat2_bins ${OUT_DIR}/${sample_id}/checkm
+        #runs tree, lineage_set, analyze, qa
+        # usage: checkm lineage_wf [-h] [-r] [--ali] [--nt] [-g] [-u UNIQUE] [-m MULTI] [--force_domain] [--no_refinement] 
+        #                     [--individual_markers] [--skip_adj_correction] [--skip_pseudogene_correction] [--aai_strain AAI_STRAIN] 
+        #                     [-a ALIGNMENT_FILE] [--ignore_thresholds]
+        #                     [-e E_VALUE] [-l LENGTH] [-f FILE] [--tab_table] [-x EXTENSION] [-t THREADS] [--pplacer_threads PPLACER_THREADS] [-q]
+        #                     [--tmpdir TMPDIR]
+        #                     bin_input output_dir
 
-    checkm gc_plot --dpi 1000 -x fa ${BIN_DIR}/${sample_id}/metabat2_bins ${OUT_DIR}/${sample_id}/checkm 1
-    # gc_plot: create GC histogram and delta-GC plot
-    # usage: checkm gc_plot [-h] [--image_type {eps,pdf,png,ps,svg}] [--dpi DPI] [--font_size FONT_SIZE] 
-    #                   [-x EXTENSION] [--width WIDTH] [--height HEIGHT]
-    #                  [-w GC_WINDOW_SIZE] [-b GC_BIN_WIDTH] [-q]
-    #                  bin_input output_dir dist_value [dist_value ...]
-done
+        checkm gc_plot --dpi 1000 -x fa ${BIN_DIR}/${sample_id}/metabat2_bins ${OUT_DIR}/${sample_id}/checkm 1
+        # gc_plot: create GC histogram and delta-GC plot
+        # usage: checkm gc_plot [-h] [--image_type {eps,pdf,png,ps,svg}] [--dpi DPI] [--font_size FONT_SIZE] 
+        #                   [-x EXTENSION] [--width WIDTH] [--height HEIGHT]
+        #                  [-w GC_WINDOW_SIZE] [-b GC_BIN_WIDTH] [-q]
+        #                  bin_input output_dir dist_value [dist_value ...]
+    done
 
     # Performance check
         if [ $? -eq 0 ]; then
@@ -487,45 +487,45 @@ done
 #       For questions, bugs, and suggestions, contact me at guritsk1@jhu.edu.
 
 
-# Set here the bins that you would like to use, by default is the metabat2
+    # Set here the bins that you would like to use, by default is the metabat2
 
-    SEL_BIN_DIR=${BINNING_DIR}/metabat2
-    # WIP: give an option to skil salmon?
-#       For megahit
-for sample_id in "${sample_name[@]}"; do
-    #metawrap quant_bins -b ${BIN_DIR}/${sample_id}/original_bins -o ${OUT_DIR}/${sample_id} -a ${BIN_DIR}/${sample_id}/binned_assembly/assembly.fa ${RAW_DATA_DIR}/${sample_id}/*R_1.fastq ${RAW_DATA_DIR}/${sample_id}/*R_2.fastq -t 50
-    metawrap quant_bins -b ${BIN_DIR}/${sample_id}/original_bins \
-    -o ${OUT_DIR}/${sample_id} \
-    -a ${MEGAHIT_DIR}/${sample_id}/final_assembly.fasta ${RAW_DATA_DIR}/${sample_id}/*R_1.fastq ${RAW_DATA_DIR}/${sample_id}/*R_2.fastq -t 50
-    #   Usage: metaWRAP quant_bins [options] -b bins_folder -o output_dir -a assembly.fa readsA_1.fastq readsA_2.fastq ... [readsX_1.fastq readsX_2.fastq]
-    #   Options:
-    #        -b STR          folder containing draft genomes (bins) in fasta format
-    #        -o STR          output directory
-    #        -a STR          fasta file with entire metagenomic assembly (strongly recommended!)
-    #        -t INT          number of threads
-done
+        SEL_BIN_DIR=${BINNING_DIR}/metabat2
+        # WIP: give an option to skil salmon?
+    #       For megahit
+    for sample_id in "${sample_name[@]}"; do
+        #metawrap quant_bins -b ${BIN_DIR}/${sample_id}/original_bins -o ${OUT_DIR}/${sample_id} -a ${BIN_DIR}/${sample_id}/binned_assembly/assembly.fa ${RAW_DATA_DIR}/${sample_id}/*R_1.fastq ${RAW_DATA_DIR}/${sample_id}/*R_2.fastq -t 50
+        metawrap quant_bins -b ${BIN_DIR}/${sample_id}/original_bins \
+        -o ${OUT_DIR}/${sample_id} \
+        -a ${MEGAHIT_DIR}/${sample_id}/final_assembly.fasta ${RAW_DATA_DIR}/${sample_id}/*R_1.fastq ${RAW_DATA_DIR}/${sample_id}/*R_2.fastq -t 50
+        #   Usage: metaWRAP quant_bins [options] -b bins_folder -o output_dir -a assembly.fa readsA_1.fastq readsA_2.fastq ... [readsX_1.fastq readsX_2.fastq]
+        #   Options:
+        #        -b STR          folder containing draft genomes (bins) in fasta format
+        #        -o STR          output directory
+        #        -a STR          fasta file with entire metagenomic assembly (strongly recommended!)
+        #        -t INT          number of threads
+    done
 
-#        For metaSPADES
-for sample_id in "${sample_name[@]}"; do
-    #metawrap quant_bins -b ${BIN_DIR}/${sample_id}/original_bins -o ${OUT_DIR}/${sample_id} -a ${BIN_DIR}/${sample_id}/binned_assembly/assembly.fa ${RAW_DATA_DIR}/${sample_id}/*R_1.fastq ${RAW_DATA_DIR}/${sample_id}/*R_2.fastq -t 50
-    metawrap quant_bins -b ${BIN_DIR}/${sample_id}/original_bins \
-    -o ${OUT_DIR}/${sample_id} \
-    -a ${METASPADES_DIR}/${sample_id}/final_assembly.fasta ${RAW_DATA_DIR}/${sample_id}/*R_1.fastq ${RAW_DATA_DIR}/${sample_id}/*R_2.fastq -t 50
-    #   Usage: metaWRAP quant_bins [options] -b bins_folder -o output_dir -a assembly.fa readsA_1.fastq readsA_2.fastq ... [readsX_1.fastq readsX_2.fastq]
-    #   Options:
-    #        -b STR          folder containing draft genomes (bins) in fasta format
-    #        -o STR          output directory
-    #        -a STR          fasta file with entire metagenomic assembly (strongly recommended!)
-    #        -t INT          number of threads
-done
+    #        For metaSPADES
+    for sample_id in "${sample_name[@]}"; do
+        #metawrap quant_bins -b ${BIN_DIR}/${sample_id}/original_bins -o ${OUT_DIR}/${sample_id} -a ${BIN_DIR}/${sample_id}/binned_assembly/assembly.fa ${RAW_DATA_DIR}/${sample_id}/*R_1.fastq ${RAW_DATA_DIR}/${sample_id}/*R_2.fastq -t 50
+        metawrap quant_bins -b ${BIN_DIR}/${sample_id}/original_bins \
+        -o ${OUT_DIR}/${sample_id} \
+        -a ${METASPADES_DIR}/${sample_id}/final_assembly.fasta ${RAW_DATA_DIR}/${sample_id}/*R_1.fastq ${RAW_DATA_DIR}/${sample_id}/*R_2.fastq -t 50
+        #   Usage: metaWRAP quant_bins [options] -b bins_folder -o output_dir -a assembly.fa readsA_1.fastq readsA_2.fastq ... [readsX_1.fastq readsX_2.fastq]
+        #   Options:
+        #        -b STR          folder containing draft genomes (bins) in fasta format
+        #        -o STR          output directory
+        #        -a STR          fasta file with entire metagenomic assembly (strongly recommended!)
+        #        -t INT          number of threads
+    done
 
-    # Performance check
-        if [ $? -eq 0 ]; then
-        echo "Step 3.6: Quant_bins completed successfully, output files at ${OUT_DIR}/${sample_id}/checkm"
-        else
-        echo "Step 3.6: Quant_bins has failed !! Check the error report for more details."
-        exit 1
-        fi
+        # Performance check
+            if [ $? -eq 0 ]; then
+            echo "Step 3.6: Quant_bins completed successfully, output files at ${OUT_DIR}/${sample_id}/checkm"
+            else
+            echo "Step 3.6: Quant_bins has failed !! Check the error report for more details."
+            exit 1
+            fi
 
 
 # Step 3.7 Bin refinement -------------------------------------------------------
