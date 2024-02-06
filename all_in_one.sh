@@ -2,11 +2,11 @@
 #SBATCH --cpus-per-task=60
 #SBATCH --mem=80GB
 #SBATCH --time=3-0:00:00
-#SBATCH --job-name=Human3_kraken2_test
+#SBATCH --job-name=all_in_one
 #SBATCH --mail-user=xiaoyue.deng@students.unibe.ch
 #SBATCH --mail-type=end
-#SBATCH --output=/storage/scratch/users/xd22m086/90_output_error/output/output_Human3_kraken2_test_%j.o
-#SBATCH --error=/storage/scratch/users/xd22m086/90_output_error/error/error_Human3_kraken2_test_%j.e
+#SBATCH --output=/storage/scratch/users/xd22m086/90_output_error/output/output_all_in_one_%j.o
+#SBATCH --error=/storage/scratch/users/xd22m086/90_output_error/error/error_all_in_one_%j.e
 #SBATCH --partition=epyc2
 #SBATCH --array=0-6
 
