@@ -18,7 +18,7 @@ A goal is to automatize this process so we get a result from raw inputs to _matu
 2. With the test data, only breakdown versions of scripts were run because of computation power and avoiding repetition.
 3. The folder construction creates some empty folders, so the user can manually configure metaWRAP files easier. The official guide to configure metaWRAP: https://github.com/bxlab/metaWRAP?tab=readme-ov-file#installation
 4. May folders will be constructed with this pipeline, but not all have their purpose at the current stage. Some modules from metaWRAP are not yet fully functional. But the folder is there if you would like to use it further. The required packages (except the databases of Kraken) are already installed and only require configuration.
-5. Also make sure to change the parameters of slurm jobs based on your requirements. 
+5. Make sure to change the parameters of slurm jobs based on your requirements, this includes the email address and repository for the output/error files. 
 6. If any questions, please contact xiaoyue.deng@students.unibe.ch. 
 
 
