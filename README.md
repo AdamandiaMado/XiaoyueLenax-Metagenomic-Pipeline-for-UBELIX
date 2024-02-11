@@ -4,6 +4,7 @@ A more detailed explaination about packages, their purposes and results obtained
 
 <!-- GETTING STARTED -->
 ## Getting Started
+This pipeline is dedicated to the [University of Bern Linux Cluster](https://hpc-unibe-ch.github.io/general/ubelix-overview.html). 
 This pipeline at the current stage consists of four main processes in metagenomic analysis: **QC**, **assembly**, **binning** and **alignment**. 
 <p align="center"><img src="https://github.com/XiaoyueLenax/Metagenomic-Pipeline-for-UBELIX/assets/122524295/1196dc53-f2cc-40c8-881e-441854bbd3e5" alt="alt text" width="600"/></p>
 
