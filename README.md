@@ -29,3 +29,4 @@ In the beginning, this pipeline will make a tree of folders for future use. In t
 ## Running the script
 The options and parameters available for each module are documented in the script as well as the metaWRAP interface. For detailed instructions, please refer to the script.
 I hope you can find this pipeline useful for metagenomic analysis on UBELIX.
+Some example outputs can be found at /storage/scratch/users/xd22m086/00_THEE/Research_project_final/example_outputs . Only small files that can be visualized directly are uploaded there.
